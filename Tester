@@ -1,0 +1,35 @@
+import java.util.LinkedList;
+public class Tester {
+
+	public static void main(String[] args) {
+		
+		 LinkedList<StockData> stockData = new LinkedList<>();
+	        stockData.add(new StockData("8-30-2024", 176.7, 178.5, 178.9, 168.92));
+	        stockData.add(new StockData("9-6-2024", 177.55, 171.39, 179.88, 171.16));
+	        stockData.add(new StockData("9-13-2024", 174.53, 186.49, 188.5, 173.51));
+	        stockData.add(new StockData("9-20-2024", 185.29, 191.6, 191.84, 183.36));
+	        stockData.add(new StockData("9-27-2024", 191.64, 187.97, 195.37, 187.34));
+	        stockData.add(new StockData("10-4-2024", 187.14, 186.51, 188.49, 180.88));
+
+	        DonavynAmazonStock stock = new DonavynAmazonStock(stockData);
+	        stock.setStartingBalance(10000.00); 
+
+	        
+	        System.out.println("Stock Data:");
+	        stock.display();
+	        int rsiWindow = 1;
+	        double calculatedRSI = stock.rsi(stockData, rsiWindow);
+	        System.out.println("RSI (" + rsiWindow + "-day period): " + calculatedRSI);
+	        int movingAverageWindow = 1;
+	        LinkedList<Double> movingAverages = stock.movingAverage(stockData, movingAverageWindow);
+	        System.out.println("\nMoving Averages (" + movingAverageWindow + "-day window):");
+	        for (int i = 0; i < movingAverages.size(); i++) {
+	            System.out.println("Day " + (i + 1) + ": " + movingAverages.get(i));
+	        }
+	        
+	        System.out.println("Executing trades:");
+	        stock.Trading(stockData, movingAverageWindow, rsiWindow);
+	    }
+		
+	}
+
