@@ -22,12 +22,12 @@ public class Tester {
 	        System.out.println("RSI (" + rsiWindow + "-day period): " + calculatedRSI);
 	        int movingAverageWindow = 1;
 	        LinkedList<Double> movingAverages = stock.movingAverage(stockData, movingAverageWindow);
-	        System.out.println("\nMoving Averages (" + movingAverageWindow + "-day window):");
+	        System.out.println("Moving Averages (" + movingAverageWindow + "-day window):");
 	        for (int i = 0; i < movingAverages.size(); i++) {
 	            System.out.println("Day " + (i + 1) + ": " + movingAverages.get(i));
 	        }
 	        
-	        System.out.println("Executing trades:");
+	        System.out.println("Trading now...");
 	        stock.Trading(stockData, movingAverageWindow, rsiWindow);
 	    }
 		
