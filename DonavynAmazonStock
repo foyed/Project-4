@@ -1,0 +1,188 @@
+import java.util.LinkedList;
+public class DonavynAmazonStock {
+	
+	/*
+	 * The fields for the DonavynAmazonStock class
+	 */
+	private LinkedList<StockData> data;
+	private double startingBalance;
+	private  int shares;
+	
+	/**
+	 * @param data
+	 * The Constructor that initializes the fields
+	 */
+	public DonavynAmazonStock(LinkedList<StockData> data) {
+		this.data = data;
+	}
+	
+	/*
+	 * Default constructor
+	 */
+	public DonavynAmazonStock() {
+		data = new LinkedList<>();
+	}
+
+	/*
+	 * Add method for the data list (adds data)
+	 */
+	public void add(StockData stocksData) {
+		data.add(stocksData);
+	}
+	
+	/*
+	 * Remove method for the data list (removes data)
+	 */
+	public void remove(StockData stocksData) {
+		if(stocksData != null) {
+			data.remove(stocksData);
+		}else {
+			System.out.println("There is nothing to remove.");
+		}
+		
+	}
+	
+	/*
+	 * Gets data from the index provided
+	 */
+	public StockData getData(int index) {
+		if(index >= 0 && index < data.size()) {
+			return data.get(index);
+		}else {
+			System.out.println("Index Out of Bounds exception");
+			return null;
+		}
+	}
+	
+	/*
+	 * Gets the size of the data
+	 */
+	public int getSize() {
+		return data.size();
+	}
+	
+	/*
+	 * Displays the data
+	 */
+	public void display() {
+		for(StockData sd : data) {
+			System.out.println("Date: " + sd.getDate() + " " + "Open: " + sd.getOpen() + "Close: " + sd.getClose() + "High: " + sd.getHigh() + "Low: " + sd.getLow());
+		}
+	}
+	
+	public double getStartingBalance() {
+		return startingBalance;
+	}
+	
+	public int getShares() {
+		return shares;
+	}
+	
+	/**
+	 * @param startingBalance the startingBalance to set
+	 */
+	public void setStartingBalance(double startingBalance) {
+		this.startingBalance = startingBalance;
+	}
+
+	/*
+	 * Calculates the RSI over the given time
+	 */
+	public double rsi(LinkedList<StockData> stockData, int N) {
+		
+		if(data == null || data.size() < N) {
+			System.out.println("There isn't enough data to find the RSI");
+			return 0.0;
+		}
+		double AvgUp = 0.0;
+		double AvgDown = 0.0;
+		LinkedList<Double> prices = new LinkedList<>();
+		   for (int i = 1; i < data.size(); i++) {
+		        double change = data.get(i).getClose() - data.get(i - 1).getClose();
+		        prices.add(change);
+		    } 
+		    for (int i = 0; i < N; i++) {
+		        double change = prices.get(i);
+		        if (change > 0) {
+		            AvgUp += change;
+		        } else {
+		            AvgDown -= change; 
+		        }
+		    }    
+		AvgUp /= N;
+		AvgDown /= N;
+		double RS = AvgUp/AvgDown;
+		double rsi = 100 - (100 / (1 + RS));
+		return rsi;
+		
+	}
+	
+	/*
+	 * Calculates the moving average within the given window
+	 */
+	public LinkedList<Double> movingAverage(LinkedList<StockData> stockData, int window) {
+	    LinkedList<Double> averageValues = new LinkedList<>();
+	    double sum = 0;
+
+	    for (int i = 0; i < stockData.size(); i++) {
+	        sum += stockData.get(i).getClose();
+	        if (i >= window - 1) {
+	            if (i >= window) {
+	                sum -= stockData.get(i - window).getClose();
+	            }
+	            averageValues.add(sum / window);
+	        } else {
+	            averageValues.add(0.0); 
+	        }
+	    }
+
+	    return averageValues;
+	}
+	
+	/*
+	 * Evaluates trading based on rsi, movingAverage, and currentPrice
+	 */
+	public double tradeEvaluator(double rsi, double movingAverage, double currentPrice, double balance, int shares) {
+        if (rsi < 30 && currentPrice < movingAverage) {
+            double buyShares =  (balance * 0.1 / currentPrice); 
+            return buyShares;
+        } else if (rsi > 70 && currentPrice > movingAverage) {
+            return -shares; 
+        }
+        return 0.0; 
+    }
+	
+	
+	/*
+	 * Trades based on the rsi and the moving average
+	 */
+	public void Trading(LinkedList<StockData> stockData, int movingAverageTime, int rsiWindow) {
+		double netWorth = startingBalance;
+
+		for (int i = movingAverageTime - 1; i < stockData.size(); i++) {
+		    LinkedList<StockData> theData = new LinkedList<>();
+		    for (int j = 0; j <= i; j++) {
+		        theData.add(stockData.get(j)); 
+		    }
+		    double rsi = rsi(theData, rsiWindow);
+		    LinkedList<Double> movingAverages = movingAverage(theData, movingAverageTime);
+		    double movingAverage = movingAverages.getLast();
+		    double currentPrice = stockData.get(i).getClose();
+		    double trade = tradeEvaluator(rsi, movingAverage, currentPrice, startingBalance, shares);
+		    if (trade > 0) {
+		        shares += trade;
+		        startingBalance -= trade * currentPrice;
+		        System.out.println("Bought " + trade + " shares " + stockData.get(i).getDate());
+		    } else if (trade < 0) {
+		        trade = -trade; 
+		        shares -= trade;
+		        startingBalance += trade * currentPrice;
+		        System.out.println("Sold " + trade + " shares " + stockData.get(i).getDate());
+		    }
+		    netWorth = startingBalance + shares * currentPrice;
+		    System.out.println("Net worth on " + stockData.get(i).getDate() + ": " + netWorth);
+		}
+	}
+}
+	
+	
