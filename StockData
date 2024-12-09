@@ -1,0 +1,82 @@
+import java.util.LinkedList;
+
+public class StockData {
+	
+	/*
+	 * The Fields for the StockData class
+	 */
+	private LinkedList<StockData> data;
+	private String date;
+	private double open;
+	private double close;
+	private double high;
+	private double low;
+
+	/*
+	 * Constructor that initializes the fields
+	 */
+	public StockData(String date, double open, double close, double high, double low) {
+		this.date = date;
+		this.open = open;
+		this.close = close;
+		this.high = high;
+		this.low = low;
+	}
+
+	/*
+	 * The Default Constructor
+	 */
+	public StockData() {
+		data = null;
+		date = "";
+		open = 0.0;
+		close = 0.0;
+		high = 0.0;
+		low = 0.0;
+	}
+
+	/*
+	 * The getter data
+	 */
+	public LinkedList<StockData> getData() {
+		return data;
+	}
+
+	/*
+	 * The getter for the date
+	 */
+	public String getDate() {
+		return date;
+	}
+
+	/*
+	 * The getter for open
+	 */
+	public double getOpen() {
+		return open;
+	}
+
+	/*
+	 * The getter for close
+	 */
+	public double getClose() {
+		return close;
+	}
+
+	/*
+	 * The getter for high
+	 */
+	public double getHigh() {
+		return high;
+	}
+
+	/*
+	 * The getter for low 
+	 */
+	public double getLow() {
+		return low;
+	}
+	
+	
+
+}
